@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">GameProject</string>
+    <string name="action_settings">Settings</string>
+    <string name="win_caption">Вы выиграли шоколадку</string>
+</resources>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<scale xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@drawable/folga"
+    android:scaleHeight="800px" android:scaleWidth="600px"
+    >
+    <bitmap android:src="@drawable/folga_size" ></bitmap>
+
+</scale>

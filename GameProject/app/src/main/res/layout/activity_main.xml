@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/rootLayout"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.podlivaev.test.gameproject.MainActivity"
+    android:background="@drawable/main_background"
+    >
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/backImage"
+        />
+
+    <GridView
+        android:layout_width="512px"
+        android:layout_height="768px"
+        android:id="@+id/gridView"
+        android:choiceMode="singleChoice"
+        android:columnWidth="@dimen/chocolate_grid_width"
+        android:gravity="center"
+        android:numColumns="4"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
+
+    <GridView
+        android:layout_width="300px"
+        android:layout_height="100px"
+        android:id="@+id/starView"
+        android:numColumns="3"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true" />
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/topView"
+        android:background="#10000000"
+        />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Button"
+        android:id="@+id/button"
+        android:onClick="onClick"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
+
+</RelativeLayout>
