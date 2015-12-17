@@ -28,11 +28,7 @@ public class MainActivity extends AppCompatActivity {
 
         displayMetrics = MainActivity.this.getResources().getDisplayMetrics();
 
-      //  tileView = (GridView) findViewById(R.id.gridView);
-      //  tileView.setAdapter(new TileAdapter(this));
-
         starView = (GridView) findViewById(R.id.starView);
-   //     starView.setAdapter(new LineAdapter(this, 3, R.drawable.star,R.drawable.star_form));
 
         backImage = (ImageView) findViewById(R.id.backImage);
         backImage.setScaleType(ImageView.ScaleType.CENTER);
@@ -60,9 +56,6 @@ public class MainActivity extends AppCompatActivity {
                 RelativeLayout.LayoutParams.WRAP_CONTENT,
                 RelativeLayout.LayoutParams.WRAP_CONTENT);
 
-       // lp.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-        //lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-       // lp.setMargins(pxToDp(800 - 150 * starList.size()), pxToDp(50), 0, 0);
         imageView.setLayoutParams(lp);
 
         imageView.setImageResource(R.drawable.star_000);
@@ -85,7 +78,6 @@ public class MainActivity extends AppCompatActivity {
         rootLayout.postDelayed(new FireStars(), 1000);
 
     }
-
 
     public void createViews(){
         int num = 0;
@@ -110,10 +102,6 @@ public class MainActivity extends AppCompatActivity {
                         pxToDp(400 + choco_size * (x - 2)),
                         pxToDp(600 + choco_size * (y - 3)),
                         0, 0);
-             //   lp.setMarginStart(pxToDp(400 + choco_size* (x - 2)));
-
-              //  imageView.setLayoutParams(lp);
-
 
                 imageView.setImageResource(chocolateTiles.topImages[num]);
                 imageView.setBackgroundResource(chocolateTiles.tileIndexes[num]);
@@ -133,6 +121,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
 
     class CListener  implements View.OnClickListener{
         public CListener(int id){
@@ -171,7 +160,6 @@ public class MainActivity extends AppCompatActivity {
             if (chocolateTiles.tileIndexes[pos] == R.drawable.star_shape)
                 addStar(pos);
         }
-
         int pos;
     }
 
@@ -215,7 +203,13 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void run() {
 
-            rootLayout.removeView(starList.get(starList.size() -1));
+            ImageView iw = starList.get(starList.size() - 1);
+            rootLayout.removeView(iw);
+
+            ImageView iww = new ImageView(MainActivity.this);
+            iww.setImageResource(R.drawable.star_create);
+            starList.set(starList.size() - 1, iww);
+
 
             RelativeLayout.LayoutParams layoutParams=new RelativeLayout.LayoutParams(
                     RelativeLayout.LayoutParams.WRAP_CONTENT,
@@ -237,7 +231,9 @@ public class MainActivity extends AppCompatActivity {
 
             int i = 1;
             for(ImageView star:starList){
-                star.setImageResource(R.drawable.star_000);
+                AnimationDrawable ad = (AnimationDrawable) star.getDrawable();
+                ad.stop();
+                ad.start();
 
                 int [] coord = new int[2];
                 star.getLocationOnScreen(coord);
@@ -253,8 +249,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void showPrize() {
 
-
-
         ContextThemeWrapper newContext = new ContextThemeWrapper(this, R.style.win_frame);
 
         TextView winView = new TextView(newContext);
@@ -267,9 +261,11 @@ public class MainActivity extends AppCompatActivity {
                     RelativeLayout.LayoutParams.WRAP_CONTENT);
 
         layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
-        //layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
         rootLayout.addView(winView, layoutParams);
 
+        for (ImageView tile : chocolateTiles.imIndexes) {
+            tile.setOnClickListener(null);
+        }
     }
 
 
@@ -289,7 +285,6 @@ public class MainActivity extends AppCompatActivity {
     ImageView backImage;
     RelativeLayout rootLayout;
     ChocolateTiles chocolateTiles;
-  //  int starNumber;
     DisplayMetrics displayMetrics;
 
     private static final String LOG_TAG = "::game_activity";
