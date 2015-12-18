@@ -3,36 +3,36 @@
     android:oneshot="true"
     >
 
-    <item android:drawable="@drawable/choco_000" android:duration="@integer/animate_deleay" />
-    <item android:drawable="@drawable/choco_001" android:duration="@integer/animate_deleay" />
-    <item android:drawable="@drawable/choco_002" android:duration="@integer/animate_deleay" />
-    <item android:drawable="@drawable/choco_003" android:duration="@integer/animate_deleay" />
-    <item android:drawable="@drawable/choco_004" android:duration="@integer/animate_deleay" />
-    <item android:drawable="@drawable/choco_005" android:duration="@integer/animate_deleay" />
-    <item android:drawable="@drawable/choco_006" android:duration="@integer/animate_deleay" />
-    <item android:drawable="@drawable/choco_007" android:duration="@integer/animate_deleay" />
-    <item android:drawable="@drawable/choco_008" android:duration="@integer/animate_deleay" />
-    <item android:drawable="@drawable/choco_009" android:duration="@integer/animate_deleay" />
-    <item android:drawable="@drawable/choco_010" android:duration="@integer/animate_deleay" />
-    <item android:drawable="@drawable/choco_011" android:duration="@integer/animate_deleay" />
-    <item android:drawable="@drawable/choco_012" android:duration="@integer/animate_deleay" />
-    <item android:drawable="@drawable/choco_013" android:duration="@integer/animate_deleay" />
-    <item android:drawable="@drawable/choco_014" android:duration="@integer/animate_deleay" />
-    <item android:drawable="@drawable/choco_015" android:duration="@integer/animate_deleay" />
-    <item android:drawable="@drawable/choco_016" android:duration="@integer/animate_deleay" />
-    <item android:drawable="@drawable/choco_017" android:duration="@integer/animate_deleay" />
-    <item android:drawable="@drawable/choco_018" android:duration="@integer/animate_deleay" />
-    <item android:drawable="@drawable/choco_019" android:duration="@integer/animate_deleay" />
-    <item android:drawable="@drawable/choco_020" android:duration="@integer/animate_deleay" />
-    <item android:drawable="@drawable/choco_021" android:duration="@integer/animate_deleay" />
-    <item android:drawable="@drawable/choco_022" android:duration="@integer/animate_deleay" />
-    <item android:drawable="@drawable/choco_023" android:duration="@integer/animate_deleay" />
-    <item android:drawable="@drawable/choco_024" android:duration="@integer/animate_deleay" />
-    <item android:drawable="@drawable/choco_025" android:duration="@integer/animate_deleay" />
-    <item android:drawable="@drawable/choco_026" android:duration="@integer/animate_deleay" />
-    <item android:drawable="@drawable/choco_027" android:duration="@integer/animate_deleay" />
-    <item android:drawable="@drawable/choco_028" android:duration="@integer/animate_deleay" />
-    <item android:drawable="@drawable/choco_029" android:duration="@integer/animate_deleay" />
-    <item android:drawable="@drawable/empty" android:duration="@integer/animate_deleay" />
+    <item android:drawable="@drawable/choco_000" android:duration="@integer/animate_tile_delay" />
+    <item android:drawable="@drawable/choco_001" android:duration="@integer/animate_tile_delay" />
+    <item android:drawable="@drawable/choco_002" android:duration="@integer/animate_tile_delay" />
+    <item android:drawable="@drawable/choco_003" android:duration="@integer/animate_tile_delay" />
+    <item android:drawable="@drawable/choco_004" android:duration="@integer/animate_tile_delay" />
+    <item android:drawable="@drawable/choco_005" android:duration="@integer/animate_tile_delay" />
+    <item android:drawable="@drawable/choco_006" android:duration="@integer/animate_tile_delay" />
+    <item android:drawable="@drawable/choco_007" android:duration="@integer/animate_tile_delay" />
+    <item android:drawable="@drawable/choco_008" android:duration="@integer/animate_tile_delay" />
+    <item android:drawable="@drawable/choco_009" android:duration="@integer/animate_tile_delay" />
+    <item android:drawable="@drawable/choco_010" android:duration="@integer/animate_tile_delay" />
+    <item android:drawable="@drawable/choco_011" android:duration="@integer/animate_tile_delay" />
+    <item android:drawable="@drawable/choco_012" android:duration="@integer/animate_tile_delay" />
+    <item android:drawable="@drawable/choco_013" android:duration="@integer/animate_tile_delay" />
+    <item android:drawable="@drawable/choco_014" android:duration="@integer/animate_tile_delay" />
+    <item android:drawable="@drawable/choco_015" android:duration="@integer/animate_tile_delay" />
+    <item android:drawable="@drawable/choco_016" android:duration="@integer/animate_tile_delay" />
+    <item android:drawable="@drawable/choco_017" android:duration="@integer/animate_tile_delay" />
+    <item android:drawable="@drawable/choco_018" android:duration="@integer/animate_tile_delay" />
+    <item android:drawable="@drawable/choco_019" android:duration="@integer/animate_tile_delay" />
+    <item android:drawable="@drawable/choco_020" android:duration="@integer/animate_tile_delay" />
+    <item android:drawable="@drawable/choco_021" android:duration="@integer/animate_tile_delay" />
+    <item android:drawable="@drawable/choco_022" android:duration="@integer/animate_tile_delay" />
+    <item android:drawable="@drawable/choco_023" android:duration="@integer/animate_tile_delay" />
+    <item android:drawable="@drawable/choco_024" android:duration="@integer/animate_tile_delay" />
+    <item android:drawable="@drawable/choco_025" android:duration="@integer/animate_tile_delay" />
+    <item android:drawable="@drawable/choco_026" android:duration="@integer/animate_tile_delay" />
+    <item android:drawable="@drawable/choco_027" android:duration="@integer/animate_tile_delay" />
+    <item android:drawable="@drawable/choco_028" android:duration="@integer/animate_tile_delay" />
+    <item android:drawable="@drawable/choco_029" android:duration="@integer/animate_tile_delay" />
+    <item android:drawable="@drawable/empty" android:duration="@integer/animate_tile_delay" />
 
 </animation-list>

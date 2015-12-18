@@ -5,5 +5,6 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="chocolate_grid_width">128px</dimen>
     <dimen name="chocolate_grid_height">128px</dimen>
-    <integer name="animate_deleay">65</integer>
+    <integer name="animate_tile_delay">65</integer>
+    <integer name="animate_star_delay">85</integer>
 </resources>

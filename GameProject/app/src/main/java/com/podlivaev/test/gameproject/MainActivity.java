@@ -8,13 +8,16 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
+import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -111,17 +114,25 @@ public class MainActivity extends AppCompatActivity {
                 imageView.setOnClickListener(new CListener(num));
                 imageView.setSoundEffectsEnabled(false);
 
-
+/*
                 int [] coord = new int[2];
                 imageView.getLocationOnScreen(coord);
-                Log.d(LOG_TAG, "bounds are: " + coord[0] + ":" + coord[1]);
+                Log.d(LOG_TAG, "bounds are: " + coord[0] + ":" + coord[1]);*/
                 num++;
-
 
             }
         }
     }
 
+    public void removeViews(){
+        for (ImageView tile : chocolateTiles.imIndexes) {
+            tile.setOnClickListener(null);
+            rootLayout.removeView(tile);
+        }
+
+        chocolateTiles = new ChocolateTiles();
+        createViews();
+    }
 
     class CListener  implements View.OnClickListener{
         public CListener(int id){
@@ -132,7 +143,9 @@ public class MainActivity extends AppCompatActivity {
             if(chocolateTiles.doAnimation)
                 return;
 
-            Log.d(LOG_TAG, "click = " + id);
+            Log.d(LOG_TAG, "click(" + chocolateTiles.numClicks + ") = " + id);
+
+            chocolateTiles.numClicks++;
 
             chocolateTiles.doAnimation = true;
             ImageView imageView = (ImageView) v;
@@ -140,8 +153,12 @@ public class MainActivity extends AppCompatActivity {
 
             v.postDelayed(new AfterEat(id),
                     chocolateTiles.animationDrawable.getDuration(0) *
-                    chocolateTiles.animationDrawable.getNumberOfFrames());
+                            chocolateTiles.animationDrawable.getNumberOfFrames());
             imageView.setOnClickListener(null);
+
+
+
+
         }
         int id;
     }
@@ -156,11 +173,33 @@ public class MainActivity extends AppCompatActivity {
         public void run() {
             Log.d(LOG_TAG, "animation ends " + pos);
             chocolateTiles.doAnimation = false;
-            chocolateTiles.topImages[pos] = R.drawable.empty;
-            if (chocolateTiles.tileIndexes[pos] == R.drawable.star_shape)
-                addStar(pos);
+            if(chocolateTiles.numClicks < 7) {
+                chocolateTiles.topImages[pos] = R.drawable.empty;
+                if (chocolateTiles.tileIndexes[pos] == R.drawable.star_shape)
+                    addStar(pos);
+            }
+            else{
+                doAnim(1.f, 0.f);
+                rootLayout.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                      removeViews();
+                    }
+                },1000);
+            }
         }
         int pos;
+    }
+
+    public void doAnim(float a, float b){
+        for (ImageView tile : chocolateTiles.imIndexes) {
+            AlphaAnimation aa = new AlphaAnimation(a, b);
+            aa.setDuration(1000);
+            aa.setFillAfter(true);
+
+            tile.clearAnimation();
+            tile.startAnimation(aa);
+        }
     }
 
     class ChocolateTiles{
@@ -169,12 +208,14 @@ public class MainActivity extends AppCompatActivity {
             topImages = new Integer[SIZE];
             imIndexes = new ImageView[SIZE];
 
+            numClicks = 0;
+
             for (int i = 0; i < SIZE; i++) {
                 tileIndexes[i] = R.drawable.empty;
                 topImages[i] = R.drawable.chocoladka_000;
             }
 
-            for (int i = 0; i < 18; i++) {
+            for (int i = 0; i < 8; i++) {
                 Random rn = new Random();
                 int n = rn.nextInt(SIZE);
                 if (tileIndexes[n] != R.drawable.empty)
@@ -185,7 +226,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             animationDrawable = (AnimationDrawable)
-                    ContextCompat.getDrawable(MainActivity.this, R.drawable.eat);
+                    ContextCompat.getDrawable(MainActivity.this, R.drawable.eating);
             doAnimation = false;
 
         }
@@ -194,6 +235,7 @@ public class MainActivity extends AppCompatActivity {
         public Integer[] tileIndexes;
         public ImageView[] imIndexes;
         public boolean doAnimation;
+        public int numClicks;
         public AnimationDrawable animationDrawable;
         private static final int SIZE = 4*6;
     }
@@ -270,7 +312,9 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void onClick(View view){
-        showPrize();
+       // removeViews();
+        //showPrize();
+        doAnim(1.f,0.f);
     }
 
     public int pxToDp(int dp) {
