@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
         backImage.setImageResource(R.drawable.folga);
 
         chocolateTiles = new ChocolateTiles();
+        giveStar = new GiveStar();
 
         rootLayout = (RelativeLayout) findViewById(R.id.rootLayout);
 
@@ -119,8 +120,9 @@ public class MainActivity extends AppCompatActivity {
                         pxToDp(600 + choco_size * (y - 3)),
                         0, 0);
 
+                imageView.setId(imageView.generateViewId());
                 imageView.setImageResource(chocolateTiles.topImages[num]);
-                imageView.setBackgroundResource(chocolateTiles.tileIndexes[num]);
+           //     imageView.setBackgroundResource(chocolateTiles.tileIndexes[num]);
                 chocolateTiles.imIndexes[num] = imageView;
 
                 rootLayout.addView(imageView, lp);
@@ -169,6 +171,9 @@ public class MainActivity extends AppCompatActivity {
 
             chocolateTiles.numClicks++;
 
+            if(giveStar.nextGive())
+                addStarBelow(id);
+
             chocolateTiles.doAnimation = true;
             ImageView imageView = (ImageView) v;
             imageView.setImageDrawable(chocolateTiles.animationDrawable);
@@ -184,6 +189,31 @@ public class MainActivity extends AppCompatActivity {
         int id;
     }
 
+    /**
+     * Решение о выдаче звёздочки заранее определено
+     */
+    public class GiveStar{
+        public GiveStar(){
+            next = false;
+            rand = new Random();
+
+
+        }
+
+        public boolean nextGive(){
+            next = rand.nextBoolean();
+            return next;
+        }
+
+        public boolean give(){
+            return next;
+        }
+
+        public int stage;
+        Random rand;
+
+        private boolean next;
+    }
 
     /**
      * После анимации съедания плитки шоколада возможные действия:
@@ -203,8 +233,11 @@ public class MainActivity extends AppCompatActivity {
             Log.d(LOG_TAG, "animation ends " + pos);
 
             chocolateTiles.topImages[pos] = R.drawable.empty;
-            if (chocolateTiles.tileIndexes[pos] == R.drawable.star_shape)
+       //     if (chocolateTiles.tileIndexes[pos] == R.drawable.star_shape)
+
+            if (giveStar.give()) {
                 addStar(pos);
+            }
 
             if(chocolateTiles.numClicks > 2) {
                 doAlphaAnim(1.f, 0.f);
@@ -261,17 +294,17 @@ public class MainActivity extends AppCompatActivity {
      */
     class ChocolateTiles{
         public ChocolateTiles() {
-            tileIndexes = new Integer[SIZE];
+       //     tileIndexes = new Integer[SIZE];
             topImages = new Integer[SIZE];
             imIndexes = new ImageView[SIZE];
 
             numClicks = 0;
 
             for (int i = 0; i < SIZE; i++) {
-                tileIndexes[i] = R.drawable.empty;
+       //         tileIndexes[i] = R.drawable.empty;
                 topImages[i] = R.drawable.chocoladka_000;
             }
-
+/*
             for (int i = 0; i < 8; i++) {
                 Random rn = new Random();
                 int n = rn.nextInt(SIZE);
@@ -280,7 +313,7 @@ public class MainActivity extends AppCompatActivity {
                 else {
                     tileIndexes[n] = R.drawable.star_shape;
                 }
-            }
+            }*/
 
             animationDrawable = (AnimationDrawable)
                     ContextCompat.getDrawable(MainActivity.this, R.drawable.eating);
@@ -289,7 +322,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         public Integer[] topImages; /// Контроль по которым кускам щёлкнили, а по каким - нет.
-        public Integer[] tileIndexes; /// Где есть звёздочка, а где нет
+       // public Integer[] tileIndexes; /// Где есть звёздочка, а где нет
         public ImageView[] imIndexes; /// список View кусков плитки шоколада
         public boolean doAnimation; /// Семафор для аннулирования действий пользователя при анимации
         public int numClicks; /// Сколько раз нажали на одну плитку шоколада
@@ -377,10 +410,53 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    public void  addStarBelow(int n) {
+
+        int x = n % 4;
+        int y = n / 4;
+        int choco_size = 125;
+
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
+                choco_size, choco_size);
+
+        lp.addRule(RelativeLayout.ALIGN_PARENT_START);
+        lp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+
+        //lp.addRule(RelativeLayout.BELOW, chocolateTiles.imIndexes[n].getId());
+
+
+        Log.d(LOG_TAG, "set bounds are: " +
+                        (400 + choco_size * (x - 2)) + "  " +
+                        pxToDp(400 + choco_size * (x - 2)) + ":" +
+                        pxToDp(600 + choco_size * (y - 3))
+        );
+        lp.setMargins(
+                pxToDp(400 + choco_size * (x - 2)),
+                pxToDp(600 + choco_size * (y - 3)),
+                0, 0);
+
+        ImageView imageView = new ImageView(this);
+        imageView.setScaleType(ImageView.ScaleType.CENTER);
+
+        imageView.setImageResource(R.drawable.star_shape);
+        //chocolateTiles.imIndexes[num] = imageView;
+
+        rootLayout.addView(imageView, lp);
+
+        ImageView iw = chocolateTiles.imIndexes[n];
+        iw.clearAnimation();
+        rootLayout.removeView(iw);
+        rootLayout.addView(iw);
+
+    }
+
     public void onClick(View view){
        // removeViews();
         //showPrize();
-        doAlphaAnim(1.f,0.f);
+        //doAlphaAnim(1.f,0.f);
+        for (int i = 0; i < 24; i++) {
+            addStarBelow(i);
+        }
     }
 
     /**
@@ -398,6 +474,7 @@ public class MainActivity extends AppCompatActivity {
 
     GridView tileView;
   //  GridView starView;
+    GiveStar giveStar;
     List<ImageView> starList;
     ImageView backImage;
     RelativeLayout rootLayout;
