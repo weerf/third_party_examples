@@ -18,6 +18,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -31,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
         displayMetrics = MainActivity.this.getResources().getDisplayMetrics();
 
-        starView = (GridView) findViewById(R.id.starView);
+    //    starView = (GridView) findViewById(R.id.starView);
 
         backImage = (ImageView) findViewById(R.id.backImage);
         backImage.setScaleType(ImageView.ScaleType.CENTER);
@@ -46,6 +47,14 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+    /**
+     * Позиционирование звёздочки в правом верхнем углу. Начинается с анимации перемещения
+     * из позиции с плиткой шоколада в необходимую позицию сверху.
+     *
+     * @param pos номер плитки шоколада. Рассчёт идёт слева направо, сверху вниз.
+     *            Всего 24 плитки [0 - 23]
+     */
     public void addStar(int pos){
 
         ImageView i = chocolateTiles.imIndexes[pos];
@@ -82,6 +91,10 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+    /**
+     * Размещение всех 24х плиток шоколада в центре экрана
+     */
     public void createViews(){
         int num = 0;
         for(int y = 0 ; y < 6; y++){
@@ -114,26 +127,35 @@ public class MainActivity extends AppCompatActivity {
                 imageView.setOnClickListener(new CListener(num));
                 imageView.setSoundEffectsEnabled(false);
 
-/*
-                int [] coord = new int[2];
-                imageView.getLocationOnScreen(coord);
-                Log.d(LOG_TAG, "bounds are: " + coord[0] + ":" + coord[1]);*/
                 num++;
 
             }
         }
     }
 
+
+    /**
+     * Удаление старых плиток с экрана, для построения новых.
+     * Перестроение происходит при исчерпании всех возможных кликов по
+     * одной шоколадной плитке
+     */
     public void removeViews(){
         for (ImageView tile : chocolateTiles.imIndexes) {
             tile.setOnClickListener(null);
             rootLayout.removeView(tile);
         }
+        backImage.clearAnimation();
 
         chocolateTiles = new ChocolateTiles();
-        createViews();
+        if(starList.size() < 5)
+            createViews();
     }
 
+
+    /**
+     * обработка нажатия на одну плитку
+     * Вызывает анимацию съедания кусочка плитки
+     */
     class CListener  implements View.OnClickListener{
         public CListener(int id){
             this.id = id;
@@ -158,12 +180,19 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
         }
         int id;
     }
 
 
+    /**
+     * После анимации съедания плитки шоколада возможные действия:
+     * Если под плиткой звёздочка - начать анимацию перемещения звёздочки на
+     * верхний край экрана
+     *
+     * Если истекли все возможные клики по данной плитке шоколада - заменить плитку
+     * на новую.
+     */
     class AfterEat implements Runnable {
         public AfterEat(int id) {
             this.pos = id;
@@ -172,36 +201,64 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void run() {
             Log.d(LOG_TAG, "animation ends " + pos);
-            chocolateTiles.doAnimation = false;
-            if(chocolateTiles.numClicks < 7) {
-                chocolateTiles.topImages[pos] = R.drawable.empty;
-                if (chocolateTiles.tileIndexes[pos] == R.drawable.star_shape)
-                    addStar(pos);
+
+            chocolateTiles.topImages[pos] = R.drawable.empty;
+            if (chocolateTiles.tileIndexes[pos] == R.drawable.star_shape)
+                addStar(pos);
+
+            if(chocolateTiles.numClicks > 2) {
+                doAlphaAnim(1.f, 0.f);
             }
-            else{
-                doAnim(1.f, 0.f);
-                rootLayout.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                      removeViews();
-                    }
-                },1000);
+            else {
+                chocolateTiles.doAnimation = false;
+
             }
+
         }
         int pos;
     }
 
-    public void doAnim(float a, float b){
-        for (ImageView tile : chocolateTiles.imIndexes) {
+    /**
+     * При уничтожении старой плитки шоколада используется анимация альфа канала
+     * @param a Начальная видимость плитки. Обычно 1.f
+     * @param b Конечная видимость плитки. Обычно 0.f
+     */
+    public void doAlphaAnim(float a, float b) {
+
+        //   ArrayList<ImageView> arr = new ArrayList<ImageView>(Arrays.asList(chocolateTiles.imIndexes));
+        //    arr.add(backImage);
+
+        for (int i = 0; i < chocolateTiles.imIndexes.length; i++) {
             AlphaAnimation aa = new AlphaAnimation(a, b);
             aa.setDuration(1000);
             aa.setFillAfter(true);
 
-            tile.clearAnimation();
-            tile.startAnimation(aa);
+            if (chocolateTiles.topImages[i] != R.drawable.empty) {
+                chocolateTiles.imIndexes[i].clearAnimation();
+                chocolateTiles.imIndexes[i].startAnimation(aa);
+            }
         }
+/*
+        AlphaAnimation aa = new AlphaAnimation(a, b);
+        aa.setDuration(1000);
+        aa.setFillAfter(true);
+
+        backImage.clearAnimation();
+        backImage.startAnimation(aa);
+*/
+        rootLayout.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                removeViews();
+            }
+        }, 1000);
+
+
     }
 
+    /**
+     * Данные о плитках шоколада
+     */
     class ChocolateTiles{
         public ChocolateTiles() {
             tileIndexes = new Integer[SIZE];
@@ -231,16 +288,20 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-        public Integer[] topImages;
-        public Integer[] tileIndexes;
-        public ImageView[] imIndexes;
-        public boolean doAnimation;
-        public int numClicks;
-        public AnimationDrawable animationDrawable;
-        private static final int SIZE = 4*6;
+        public Integer[] topImages; /// Контроль по которым кускам щёлкнили, а по каким - нет.
+        public Integer[] tileIndexes; /// Где есть звёздочка, а где нет
+        public ImageView[] imIndexes; /// список View кусков плитки шоколада
+        public boolean doAnimation; /// Семафор для аннулирования действий пользователя при анимации
+        public int numClicks; /// Сколько раз нажали на одну плитку шоколада
+        public AnimationDrawable animationDrawable; /// Анимация "Ест". Нужна в одном экземпляре
+        private static final int SIZE = 4*6; /// размер плитки
     }
 
 
+    /**
+     * Анимация переливания звёздочек используется после открытия очередной  под плиткой
+     * шоколада.
+     */
     class FireStars implements Runnable{
         @Override
         public void run() {
@@ -268,7 +329,7 @@ public class MainActivity extends AppCompatActivity {
             layoutParams.setMargins(pxToDp(800 - 150 * starList.size()), pxToDp(50), 0, 0);
 
             starList.get(starList.size() -1).setLayoutParams(layoutParams);
-            rootLayout.addView(starList.get(starList.size() -1), layoutParams);
+            rootLayout.addView(starList.get(starList.size() - 1), layoutParams);
 
 
             int i = 1;
@@ -289,6 +350,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Собрали звёздочки,
+     * сообщаем о выигрыше,
+     * выдаём шоколадку.
+     */
     private void showPrize() {
 
         ContextThemeWrapper newContext = new ContextThemeWrapper(this, R.style.win_frame);
@@ -314,17 +380,24 @@ public class MainActivity extends AppCompatActivity {
     public void onClick(View view){
        // removeViews();
         //showPrize();
-        doAnim(1.f,0.f);
+        doAlphaAnim(1.f,0.f);
     }
 
-    public int pxToDp(int dp) {
+    /**
+     * рассчёты происходят в пикселах, параметры передаются в dp.
+     * Так как плотность экрана планшета чуть ниже 160 dpi( ~157).
+     * Производим перерасчёт
+     * @param px размер в пикселах
+     * @return размер в независимых пикселах
+     */
+    public int pxToDp(int px) {
         Log.d(LOG_TAG,"xdpi:"+displayMetrics.xdpi );
-        Log.d(LOG_TAG,"DM=" + DisplayMetrics.DENSITY_DEFAULT + " dp=" + dp +"*" + displayMetrics.xdpi);
-        return Math.round(dp *((float) DisplayMetrics.DENSITY_DEFAULT) / displayMetrics.xdpi);
+        Log.d(LOG_TAG,"DM=" + DisplayMetrics.DENSITY_DEFAULT + " px=" + px +"*" + displayMetrics.xdpi);
+        return Math.round(px *((float) DisplayMetrics.DENSITY_DEFAULT) / displayMetrics.xdpi);
     }
 
     GridView tileView;
-    GridView starView;
+  //  GridView starView;
     List<ImageView> starList;
     ImageView backImage;
     RelativeLayout rootLayout;
