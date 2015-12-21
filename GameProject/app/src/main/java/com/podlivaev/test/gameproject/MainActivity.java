@@ -147,6 +147,11 @@ public class MainActivity extends AppCompatActivity {
             rootLayout.removeView(tile);
         }
         backImage.clearAnimation();
+        for(ImageView view:chocolateTiles.viewsToDelete){
+            rootLayout.removeView(view);
+        }
+
+        chocolateTiles.viewsToDelete.clear();
 
         chocolateTiles = new ChocolateTiles();
         if(starList.size() < 5)
@@ -297,6 +302,7 @@ public class MainActivity extends AppCompatActivity {
        //     tileIndexes = new Integer[SIZE];
             topImages = new Integer[SIZE];
             imIndexes = new ImageView[SIZE];
+            viewsToDelete = new LinkedList<>();
 
             numClicks = 0;
 
@@ -327,6 +333,7 @@ public class MainActivity extends AppCompatActivity {
         public boolean doAnimation; /// Семафор для аннулирования действий пользователя при анимации
         public int numClicks; /// Сколько раз нажали на одну плитку шоколада
         public AnimationDrawable animationDrawable; /// Анимация "Ест". Нужна в одном экземпляре
+        public LinkedList<ImageView> viewsToDelete;
         private static final int SIZE = 4*6; /// размер плитки
     }
 
@@ -439,7 +446,7 @@ public class MainActivity extends AppCompatActivity {
         imageView.setScaleType(ImageView.ScaleType.CENTER);
 
         imageView.setImageResource(R.drawable.star_shape);
-        //chocolateTiles.imIndexes[num] = imageView;
+        chocolateTiles.viewsToDelete.add(imageView);
 
         rootLayout.addView(imageView, lp);
 
