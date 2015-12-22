@@ -110,11 +110,11 @@ public class MainActivity extends AppCompatActivity {
                 lp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
 
                 int choco_size = 125;
-                 Log.d(LOG_TAG, "set bounds are: " +
+        /*         Log.d(LOG_TAG, "set bounds are: " +
                                  (400 + choco_size * (x - 2)) + "  " +
                                  pxToDp(400 + choco_size * (x - 2)) + ":" +
                                  pxToDp(600 + choco_size * (y - 3))
-                 );
+                 ); */
                 lp.setMargins(
                         pxToDp(400 + choco_size * (x - 2)),
                         pxToDp(600 + choco_size * (y - 3)),
@@ -150,6 +150,8 @@ public class MainActivity extends AppCompatActivity {
         for(ImageView view:chocolateTiles.viewsToDelete){
             rootLayout.removeView(view);
         }
+
+        giveStar.stageIncrement();
 
         chocolateTiles.viewsToDelete.clear();
 
@@ -201,12 +203,49 @@ public class MainActivity extends AppCompatActivity {
         public GiveStar(){
             next = false;
             rand = new Random();
+            currentStage = 0;
+            currentClick = 0;
 
+            clickValues = new boolean[3][7];
+            for (boolean[] a: clickValues) {
+                Arrays.fill(a, false);
+            }
 
+            // Первый экран: от одной до трёх звёздочек
+            int numberStarsOnTheFirstStage = rand.nextInt(3) + 1;
+            starDistribution(0, numberStarsOnTheFirstStage);
+
+            // Второй экран: до четырёх включительно
+            int numberStarsOnTheSecondStage = rand.nextInt(2) + 3 - numberStarsOnTheFirstStage;
+            starDistribution(1, numberStarsOnTheSecondStage);
+
+            //Третий экран: 5 звёздочек с вероятностью 1 к 4
+            // это rand.nextInt(5) / 4 + 4,
+            // на первое время чуть больше
+            int numberStarsOnTheThirdStage = rand.nextInt(8) / 4 + 4
+                    - numberStarsOnTheFirstStage
+                    - numberStarsOnTheSecondStage;
+            starDistribution(2, numberStarsOnTheThirdStage);
+
+            // Распечатка результатов игры
+            Log.d(LOG_TAG, "Game result:");
+            for (boolean[] a: clickValues) {
+                Arrays.asList(a);
+                String s = "[ ";
+                for(boolean b:a)
+                    s += b ? "X, " : " , ";
+                s +="]";
+                Log.d(LOG_TAG, s);
+            }
         }
 
         public boolean nextGive(){
             next = rand.nextBoolean();
+            if(currentStage > 2)
+                next = false;
+            else
+                next = clickValues[currentStage][currentClick];
+            currentClick++;
             return next;
         }
 
@@ -214,10 +253,27 @@ public class MainActivity extends AppCompatActivity {
             return next;
         }
 
-        public int stage;
-        Random rand;
+        public void stageIncrement(){
+            currentStage++;
+            currentClick = 0;
+        }
 
+        private void starDistribution(int stage, int starNumber){
+            for (int i = 0; i < starNumber; i++) {
+                int n = rand.nextInt(7);
+                if(clickValues[stage][n] == true)
+                    i--;
+                else
+                    clickValues[stage][n] = true;
+
+            }
+        }
+
+        private boolean [][] clickValues;
+        private Random rand;
         private boolean next;
+        private int currentStage;
+        private int currentClick;
     }
 
     /**
@@ -244,7 +300,7 @@ public class MainActivity extends AppCompatActivity {
                 addStar(pos);
             }
 
-            if(chocolateTiles.numClicks > 2) {
+            if(chocolateTiles.numClicks >= 7) {
                 doAlphaAnim(1.f, 0.f);
             }
             else {
@@ -266,9 +322,22 @@ public class MainActivity extends AppCompatActivity {
         //   ArrayList<ImageView> arr = new ArrayList<ImageView>(Arrays.asList(chocolateTiles.imIndexes));
         //    arr.add(backImage);
 
+        //распологаем необнаруженные звёздочки
+        int numStarsToDraw = 7 - chocolateTiles.viewsToDelete.size() ;
+        numStarsToDraw = numStarsToDraw > 0 ? numStarsToDraw : 1;
+        Random r = new Random();
+        for (int i = 0; i < numStarsToDraw; i++) {
+            int n = r.nextInt(chocolateTiles.SIZE);
+            if(chocolateTiles.topImages[n] == R.drawable.empty)
+                i--;
+            else{
+                addStarBelow(n);
+            }
+        }
+
         for (int i = 0; i < chocolateTiles.imIndexes.length; i++) {
             AlphaAnimation aa = new AlphaAnimation(a, b);
-            aa.setDuration(1000);
+            aa.setDuration(1500);
             aa.setFillAfter(true);
 
             if (chocolateTiles.topImages[i] != R.drawable.empty) {
@@ -284,12 +353,13 @@ public class MainActivity extends AppCompatActivity {
         backImage.clearAnimation();
         backImage.startAnimation(aa);
 */
-        rootLayout.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                removeViews();
-            }
-        }, 1000);
+        if(starList.size() < 5)
+            rootLayout.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    removeViews();
+                }
+            }, 1500);
 
 
     }
@@ -431,12 +501,6 @@ public class MainActivity extends AppCompatActivity {
 
         //lp.addRule(RelativeLayout.BELOW, chocolateTiles.imIndexes[n].getId());
 
-
-        Log.d(LOG_TAG, "set bounds are: " +
-                        (400 + choco_size * (x - 2)) + "  " +
-                        pxToDp(400 + choco_size * (x - 2)) + ":" +
-                        pxToDp(600 + choco_size * (y - 3))
-        );
         lp.setMargins(
                 pxToDp(400 + choco_size * (x - 2)),
                 pxToDp(600 + choco_size * (y - 3)),
@@ -474,8 +538,6 @@ public class MainActivity extends AppCompatActivity {
      * @return размер в независимых пикселах
      */
     public int pxToDp(int px) {
-        Log.d(LOG_TAG,"xdpi:"+displayMetrics.xdpi );
-        Log.d(LOG_TAG,"DM=" + DisplayMetrics.DENSITY_DEFAULT + " px=" + px +"*" + displayMetrics.xdpi);
         return Math.round(px *((float) DisplayMetrics.DENSITY_DEFAULT) / displayMetrics.xdpi);
     }
 
