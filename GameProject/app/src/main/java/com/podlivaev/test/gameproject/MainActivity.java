@@ -276,7 +276,7 @@ public class MainActivity extends AppCompatActivity {
             //Третий экран: 5 звёздочек с вероятностью 1 к 4
             // это rand.nextInt(5) / 4 + 4,
             // на первое время чуть больше
-            int numberStarsOnTheThirdStage = rand.nextInt(8) / 4 + 4
+            int numberStarsOnTheThirdStage = ( - rand.nextInt(6) / 4 + 1 ) + 4
                     - numberStarsOnTheFirstStage
                     - numberStarsOnTheSecondStage;
             starDistribution(2, numberStarsOnTheThirdStage);
@@ -293,6 +293,12 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+        /**
+         * Новый клик - вызываем эту функцию
+         * Текущий результат хранится в {@link #give()}
+         *
+         * @return Наличие звёздочки в текущем клике
+         */
         public boolean nextGive(){
             next = rand.nextBoolean();
             if(currentStage > 2)
@@ -303,10 +309,18 @@ public class MainActivity extends AppCompatActivity {
             return next;
         }
 
+        /**
+         * Наличие звёздочки в текущем клике, для перехода к следующему клику требуется
+         * вызов {@link #nextGive()}
+         * @return есть ли звёздочка в текущем цикле
+         */
         public boolean give(){
             return next;
         }
 
+        /**
+         * Вызов требуется при переходе на новую шоколадку
+         */
         public void stageIncrement(){
             currentStage++;
             currentClick = 0;
@@ -399,14 +413,7 @@ public class MainActivity extends AppCompatActivity {
                 chocolateTiles.imIndexes[i].startAnimation(aa);
             }
         }
-/*
-        AlphaAnimation aa = new AlphaAnimation(a, b);
-        aa.setDuration(1000);
-        aa.setFillAfter(true);
 
-        backImage.clearAnimation();
-        backImage.startAnimation(aa);
-*/
         if(starList.size() < 5)
             rootLayout.postDelayed(new Runnable() {
                 @Override
@@ -434,16 +441,6 @@ public class MainActivity extends AppCompatActivity {
        //         tileIndexes[i] = R.drawable.empty;
                 topImages[i] = R.drawable.chocoladka_000;
             }
-/*
-            for (int i = 0; i < 8; i++) {
-                Random rn = new Random();
-                int n = rn.nextInt(SIZE);
-                if (tileIndexes[n] != R.drawable.empty)
-                    i--;
-                else {
-                    tileIndexes[n] = R.drawable.star_shape;
-                }
-            }*/
 
             animationDrawable = (AnimationDrawable)
                     ContextCompat.getDrawable(MainActivity.this, R.drawable.eating);
@@ -541,6 +538,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * Часть элементов добавляется во время игры.
+     * функция добавляет виджет со звёздочкой за кусочном шоколадки
+     * @param n номер куска плитки шоколада, за которым будет звёздочка
+     */
     public void  addStarBelow(int n) {
 
         int x = n % 4;
@@ -575,6 +577,10 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Анимация перенаправления фольги со звёздочками от предыдущей шоколадки
+     * при замене на новую
+     */
     private void move_out(){
 
         for (ImageView view: chocolateTiles.viewsToDelete) {
@@ -620,8 +626,6 @@ public class MainActivity extends AppCompatActivity {
         return Math.round(px *((float) DisplayMetrics.DENSITY_DEFAULT) / displayMetrics.xdpi);
     }
 
-    GridView tileView;
-  //  GridView starView;
     GiveStar giveStar;
     List<ImageView> starList;
     ImageView backImage;
