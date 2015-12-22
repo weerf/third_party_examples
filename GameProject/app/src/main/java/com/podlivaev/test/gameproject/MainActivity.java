@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
 
         imageView.setImageResource(R.drawable.star_000);
 
-        rootLayout.addView(imageView,lp);
+        rootLayout.addView(imageView, lp);
 
         Log.d(LOG_TAG, "find star at " + pos + " coordinates are: " + xy[0] + ":" + xy[1]);
 
@@ -135,6 +135,55 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Размещение всех 24х плиток шоколада за экраном
+     */
+    public void createViewsMoveable() {
+        int num = 0;
+        for (int y = 0; y < 6; y++) {
+            for (int x = 0; x < 4; x++) {
+                ImageView imageView = new ImageView(this);
+
+                RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
+                        RelativeLayout.LayoutParams.WRAP_CONTENT,
+                        RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+                lp.addRule(RelativeLayout.ALIGN_PARENT_START);
+                lp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+
+                int choco_size = 125;
+
+                lp.setMargins(
+                        pxToDp(400 + choco_size * (x - 2)),
+                        pxToDp(600 + choco_size * (y - 3)),
+                        0, 0);
+
+
+                TranslateAnimation ta = new TranslateAnimation(-1000.f, 0.f, 0.f, 0.f);
+                ta.setDuration(1000);
+                ta.setFillAfter(true);
+                imageView.startAnimation(ta);
+
+
+                imageView.setId(imageView.generateViewId());
+                imageView.setImageResource(chocolateTiles.topImages[num]);
+                chocolateTiles.imIndexes[num] = imageView;
+
+                rootLayout.addView(imageView, lp);
+                imageView.setOnClickListener(new CListener(num));
+                imageView.setSoundEffectsEnabled(false);
+
+                num++;
+
+            }
+        }
+
+        TranslateAnimation ta = new TranslateAnimation(-1000.f, 0.f, 0.f, 0.f);
+        ta.setDuration(1000);
+        ta.setFillAfter(true);
+        backImage.startAnimation(ta);
+    }
+
 
     /**
      * Удаление старых плиток с экрана, для построения новых.
@@ -146,18 +195,23 @@ public class MainActivity extends AppCompatActivity {
             tile.setOnClickListener(null);
             rootLayout.removeView(tile);
         }
+        /*
         backImage.clearAnimation();
         for(ImageView view:chocolateTiles.viewsToDelete){
             rootLayout.removeView(view);
         }
+        */
+        //rootLayout.removeView(backImage);
 
         giveStar.stageIncrement();
 
         chocolateTiles.viewsToDelete.clear();
 
         chocolateTiles = new ChocolateTiles();
-        if(starList.size() < 5)
-            createViews();
+        if(starList.size() < 5) {
+            createViewsMoveable();
+            //createViews();
+        }
     }
 
 
@@ -357,7 +411,7 @@ public class MainActivity extends AppCompatActivity {
             rootLayout.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    removeViews();
+                    move_out();
                 }
             }, 1500);
 
@@ -521,13 +575,38 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void move_out(){
+
+        for (ImageView view: chocolateTiles.viewsToDelete) {
+            TranslateAnimation ta = new TranslateAnimation(0.f,1000.f,0.f ,0.f);
+            ta.setDuration(1000);
+            ta.setFillAfter(true);
+            view.clearAnimation();
+            view.startAnimation(ta);
+        }
+
+        TranslateAnimation ta = new TranslateAnimation(0.f,1000.f,0.f ,0.f);
+        ta.setDuration(1000);
+        ta.setFillAfter(true);
+
+        backImage.clearAnimation();
+        backImage.startAnimation(ta);
+
+        rootLayout.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                removeViews();
+            }
+        }, 1000);
+
+    }
+
     public void onClick(View view){
        // removeViews();
         //showPrize();
         //doAlphaAnim(1.f,0.f);
-        for (int i = 0; i < 24; i++) {
-            addStarBelow(i);
-        }
+        move_out();
+
     }
 
     /**
