@@ -1,6 +1,5 @@
 package com.podlivaev.test.gameproject;
 
-import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -11,9 +10,9 @@ import android.widget.ImageView;
 
 import java.util.Random;
 
-public class TileAdapter extends BaseAdapter {
+class TileAdapter {}/*extends BaseAdapter {
 
-    public TileAdapter (MainActivity c){
+    public TileAdapter (GameActivity c){
         context = c;
 
         tileIndexes = new Integer[SIZE];
@@ -66,7 +65,6 @@ public class TileAdapter extends BaseAdapter {
         }
 
         imageView.setImageResource(topImages[position]);
-
         imageView.setBackgroundResource(tileIndexes[position]);
 
         imIndexes[position] = imageView;
@@ -119,7 +117,7 @@ public class TileAdapter extends BaseAdapter {
 
     public ImageView[] imIndexes;
 
-    private MainActivity context;
+    private GameActivity context;
 
     private static final int SIZE = 4*6;
     private static final String LOG_TAG = "::adapter";
@@ -129,3 +127,6 @@ public class TileAdapter extends BaseAdapter {
 
 
 }
+
+*/
+

@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:id="@+id/rootLayout"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.podlivaev.test.gameproject.MainActivity"
+    tools:context=".GameActivity"
     android:background="@drawable/main_background"
     >
 

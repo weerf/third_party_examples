@@ -11,28 +11,23 @@ import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
-import android.widget.ArrayAdapter;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
-public class MainActivity extends AppCompatActivity {
+public class GameActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_game);
 
-        displayMetrics = MainActivity.this.getResources().getDisplayMetrics();
-
-    //    starView = (GridView) findViewById(R.id.starView);
+        displayMetrics = GameActivity.this.getResources().getDisplayMetrics();
 
         backImage = (ImageView) findViewById(R.id.backImage);
         backImage.setScaleType(ImageView.ScaleType.CENTER);
@@ -45,7 +40,6 @@ public class MainActivity extends AppCompatActivity {
 
         starList = new LinkedList<ImageView>();
         createViews();
-
     }
 
 
@@ -443,7 +437,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             animationDrawable = (AnimationDrawable)
-                    ContextCompat.getDrawable(MainActivity.this, R.drawable.eating);
+                    ContextCompat.getDrawable(GameActivity.this, R.drawable.eating);
             doAnimation = false;
 
         }
@@ -470,7 +464,7 @@ public class MainActivity extends AppCompatActivity {
             ImageView iw = starList.get(starList.size() - 1);
             rootLayout.removeView(iw);
 
-            ImageView iww = new ImageView(MainActivity.this);
+            ImageView iww = new ImageView(GameActivity.this);
             iww.setImageResource(R.drawable.star_create);
             starList.set(starList.size() - 1, iww);
 
